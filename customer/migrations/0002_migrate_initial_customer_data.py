@@ -11,7 +11,6 @@ def migrate_initial_data(apps, schema_editor):
 
     customer_data: List[Customer] = [
         Customer(
-            id = row['Customer ID'],
             first_name = row['First Name'],
             last_name = row['Last Name'],
             age = row['Age'],
