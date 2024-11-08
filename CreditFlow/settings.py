@@ -81,11 +81,10 @@ WSGI_APPLICATION = 'CreditFlow.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': {}
 }
+db_from_env = env.db(default="psql://postgres:postgres@localhost:5432/credit_flow_db")
+DATABASES["default"].update(db_from_env)
 
 
 # Password validation
