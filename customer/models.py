@@ -2,7 +2,6 @@ from django.db import models
 
 # Create your models here.
 class Customer(models.Model):
-    id = models.IntegerField(primary_key=True)
     first_name = models.CharField(max_length=255, blank=False, null=False)
     last_name = models.CharField(max_length=255, blank=False, null=False)
     age = models.PositiveIntegerField(blank=False, null=False)

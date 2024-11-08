@@ -5,3 +5,4 @@ djangorestframework
 pandas
 openpyxl
 pydantic==1.10.2
+dependency-injector
