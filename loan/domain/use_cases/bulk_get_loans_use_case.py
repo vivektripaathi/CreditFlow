@@ -11,4 +11,5 @@ class BulkGetLoansUseCase:
         self.db_repo = db_repo
 
     def execute(self, customer_id: int) -> LoanListDomainModel:
+        # TODO: Map response as per requirement (A response type is to be created)
         return self.db_repo.bulk_get(customer_id)
