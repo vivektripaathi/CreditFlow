@@ -1,3 +1,4 @@
+from typing import List
 from pydantic import BaseModel
 
 
@@ -22,3 +23,13 @@ class CreditScoreFactors(BaseModel):
     tenures: int
     emis_paid_on_time: int
     loans_this_year: int
+
+class BulkGetLoanResponse(BaseModel):
+    loan_id: int
+    loan_amount: int
+    interest_rate: float
+    monthly_installment: float
+    repayments_left: int
+
+class BulkGetLoanListResponse(BaseModel):
+    __root__: List[BulkGetLoanResponse]

@@ -1,6 +1,7 @@
 from loan.data.abstract_repo import LoanAbstractRepository
-from loan.domain.domain_models import LoanListDomainModel
 from dependency_injector.wiring import Provide
+
+from loan.presentation.types import BulkGetLoanResponse, BulkGetLoanListResponse
 
 
 class BulkGetLoansUseCase:
@@ -10,6 +11,17 @@ class BulkGetLoansUseCase:
     ) -> None:
         self.db_repo = db_repo
 
-    def execute(self, customer_id: int) -> LoanListDomainModel:
-        # TODO: Map response as per requirement (A response type is to be created)
-        return self.db_repo.bulk_get(customer_id)
+    def execute(self, customer_id: int) -> BulkGetLoanListResponse:
+        loans = self.db_repo.bulk_get(customer_id)
+        return BulkGetLoanListResponse(
+            __root__=[
+                BulkGetLoanResponse(
+                    loan_id=loan.id,
+                    loan_amount=loan.loan_amount,
+                    interest_rate=loan.interest_rate,
+                    monthly_installment=loan.monthly_payment,
+                    repayments_left=(loan.tenure-loan.emis_paid_on_time)
+                )
+                for loan in loans
+            ]
+        )
