@@ -4,7 +4,7 @@ from loan.data.abstract_repo import LoanAbstractRepository
 from dependency_injector.wiring import Provide
 
 from loan.domain.domain_models import LoanListDomainModel
-from loan.presentation.types import CheckLoanEligibilityRequest, CheckLoanEligibilityResponse, CreditScoreFactors
+from loan.presentation.types import CreateLoanRequest, CheckLoanEligibilityResponse, CreditScoreFactors
 
 
 class CheckLoanEligibilityUseCase:
@@ -72,7 +72,7 @@ class CheckLoanEligibilityUseCase:
 
 
     def determine_loan_eligibility(
-        self, credit_score: int, current_emis: int, monthly_salary: float, loan_request: CheckLoanEligibilityRequest
+        self, credit_score: int, current_emis: int, monthly_salary: float, loan_request: CreateLoanRequest
     ) -> Tuple[bool, float]:
         if current_emis > 0.5 * monthly_salary:
             return False, 0.0
@@ -86,7 +86,7 @@ class CheckLoanEligibilityUseCase:
         return False, 0.0
 
 
-    def execute(self, loan_request: CheckLoanEligibilityRequest):
+    def execute(self, loan_request: CreateLoanRequest):
         previous_loans = self.db_repo.bulk_get(loan_request.customer_id)
         credit_score = self.get_credit_score(previous_loans)
         current_emis = self.get_current_emis(previous_loans)

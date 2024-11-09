@@ -4,13 +4,6 @@ from pydantic import BaseModel
 from customer.domain.domain_models import CustomerDoaminModel
 
 
-class CheckLoanEligibilityRequest(BaseModel):
-    customer_id: int
-    loan_amount: int
-    interest_rate: float
-    tenure: int
-
-
 class CheckLoanEligibilityResponse(BaseModel):
     customer_id: int
     approval: bool

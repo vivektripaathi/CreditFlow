@@ -7,7 +7,7 @@ from CreditFlow.utils import dict_serialized
 from loan.domain.use_cases.bulk_get_loans_use_case import BulkGetLoansUseCase
 from loan.domain.use_cases.check_loan_eligibility_use_case import CheckLoanEligibilityUseCase
 from loan.domain.use_cases.get_loan_use_case import GetLoanUseCase
-from loan.presentation.types import CheckLoanEligibilityRequest
+from loan.presentation.types import CreateLoanRequest
 
 class BulkGetLoanView(APIView):
     def get(
@@ -26,7 +26,7 @@ class CheckLoanEligibilityView(APIView):
         request,
         check_loan_eligibility_use_case: CheckLoanEligibilityUseCase = Provide["check_loan_eligibility_use_case"],
     ):
-        loan_request = CheckLoanEligibilityRequest.parse_obj(request.data)
+        loan_request = CreateLoanRequest.parse_obj(request.data)
         response = check_loan_eligibility_use_case.execute(loan_request)
         return Response(data=dict_serialized(response), status=status.HTTP_200_OK)
 
