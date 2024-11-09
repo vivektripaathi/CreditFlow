@@ -18,8 +18,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
-    LOGLEVEL=(str, "INFO"),
-    DEBUG_SQL=(bool, False),
+    CELERY_BROKER_URL=(str, "redis://localhost:6379/0"),
 )
 env.read_env(os.path.join(BASE_DIR, ".env"))
 
@@ -47,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'customer.apps.CustomerConfig',
     'loan.apps.LoanConfig',
+    'core.apps.CoreConfig',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +135,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "CreditFlow.exception_handler.custom_exception_handler",
 }
+
+
+# CELERY CONFIGURATION
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
