@@ -44,3 +44,18 @@ class GetLoanResponse(BaseModel):
     interest_rate: float
     monthly_installment: int
     tenure: int
+
+
+class CreateLoanRequest(BaseModel):
+    customer_id: int
+    loan_amount: int
+    interest_rate: float
+    tenure: int
+
+
+class CreateLoanResponse(BaseModel):
+    loan_id: int
+    customer_id: int
+    loan_approved: bool
+    message: str
+    monthly_installment: int
