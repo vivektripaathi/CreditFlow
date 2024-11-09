@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('customer', '0002_migrate_initial_customer_data'),
+        ('customer', '0001_initial'),
     ]
 
     operations = [
