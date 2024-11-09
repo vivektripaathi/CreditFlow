@@ -1,4 +1,5 @@
 from loan.data.abstract_repo import LoanAbstractRepository
+from loan.exceptions import LoanDoesNotExistsException
 from loan.models import Loan
 from loan.domain.domain_models import LoanDomainModel, LoanListDomainModel
 
@@ -12,3 +13,10 @@ class LoanDbRepository(LoanAbstractRepository):
                 map(LoanDomainModel.from_orm, loan_db_list)
             )
         )
+    
+    def get(self, loan_id: int) -> LoanDomainModel:
+        try:
+            loan_db_entry = Loan.objects.get(id=loan_id)
+            return LoanDomainModel.from_orm(loan_db_entry)
+        except Loan.DoesNotExist as exc:
+            raise LoanDoesNotExistsException from exc
