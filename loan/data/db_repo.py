@@ -23,15 +23,13 @@ class LoanDbRepository(LoanAbstractRepository):
 
     def create(self, loan_request: LoanDomainModel) -> LoanDomainModel:
         loan_db_entry = Loan.objects.create(
-            Loan(
-                customer_id=loan_request.customer_id,
-                loan_amount=loan_request.loan_amount,
-                tenure=loan_request.tenure,
-                interest_rate=loan_request.interest_rate,
-                monthly_payment=loan_request.monthly_payment,
-                emis_paid_on_time=loan_request.emis_paid_on_time,
-                approval_date=loan_request.approval_date,
-                end_date=loan_request.end_date,
-            )
+            customer_id=loan_request.customer_id,
+            loan_amount=loan_request.loan_amount,
+            tenure=loan_request.tenure,
+            interest_rate=loan_request.interest_rate,
+            monthly_payment=loan_request.monthly_payment,
+            emis_paid_on_time=loan_request.emis_paid_on_time,
+            approval_date=loan_request.approval_date,
+            end_date=loan_request.end_date,
         )
         return LoanDomainModel.from_orm(loan_db_entry)
