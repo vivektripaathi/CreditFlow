@@ -3,9 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from dependency_injector.wiring import Provide
-import json
 from CreditFlow.utils import dict_serialized
 from loan.domain.use_cases.bulk_get_loans_use_case import BulkGetLoansUseCase
+from loan.domain.use_cases.check_loan_eligibility_use_case import CheckLoanEligibilityUseCase
+from loan.presentation.types import CheckLoanEligibilityRequest
 
 class BulkGetLoanView(APIView):
     def get(
@@ -17,3 +18,13 @@ class BulkGetLoanView(APIView):
         response = bulk_get_loans_use_case.execute(customer_id)
         return Response(data=dict_serialized(response), status=status.HTTP_200_OK)
 
+
+class CheckLoanEligibilityView(APIView):
+    def post(
+        self,
+        request,
+        check_loan_eligibility_use_case: CheckLoanEligibilityUseCase = Provide["check_loan_eligibility_use_case"],
+    ):
+        loan_request = CheckLoanEligibilityRequest.parse_obj(request.data)
+        response = check_loan_eligibility_use_case.execute(loan_request)
+        return Response(data=dict_serialized(response), status=status.HTTP_200_OK)
