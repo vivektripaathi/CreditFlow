@@ -8,3 +8,6 @@ class LoanAbstractRepository(abc.ABC):
     
     def get(self, loan_id: int) -> LoanDomainModel:
         """Get loan by id"""
+
+    def create(self, loan_request: LoanDomainModel) -> LoanDomainModel:
+        """Create a new loan entry"""
