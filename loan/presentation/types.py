@@ -6,12 +6,12 @@ from customer.domain.domain_models import CustomerDoaminModel
 
 class CheckLoanEligibilityResponse(BaseModel):
     customer_id: int
-    approval: bool
+    approval: bool = False
     loan_amount: int
     interest_rate: float
-    corrected_interest_rate: float
+    corrected_interest_rate: float = 0.00
     tenure: int
-    monthly_installment: float
+    monthly_installment: float = 0.00
 
 class CreditScoreFactors(BaseModel):
     loan_sum: int

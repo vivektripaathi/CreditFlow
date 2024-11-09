@@ -4,6 +4,7 @@ from loan.data.abstract_repo import LoanAbstractRepository
 from dependency_injector.wiring import Provide
 
 from loan.domain.domain_models import LoanListDomainModel
+from loan.exceptions import NotEligibleForLoanError
 from loan.presentation.types import CreateLoanRequest, CheckLoanEligibilityResponse, CreditScoreFactors
 
 
@@ -42,7 +43,7 @@ class CheckLoanEligibilityUseCase:
         approved_limit = previous_loans[0].customer.approved_limit
 
         if credit_score_factors.loan_sum > approved_limit:
-            return 0
+            raise NotEligibleForLoanError("Not eligible: total loans exceed your approved credit limit, resulting in a credit score of 0.")
 
         past_emi_score = min(100, (credit_score_factors.emis_paid_on_time / credit_score_factors.tenures) * 100)
         num_loans_score = max(0, 100 - abs(previous_loans.__len__()-5) * 10)
@@ -75,7 +76,7 @@ class CheckLoanEligibilityUseCase:
         self, credit_score: int, current_emis: int, monthly_salary: float, loan_request: CreateLoanRequest
     ) -> Tuple[bool, float]:
         if current_emis > 0.5 * monthly_salary:
-            return False, 0.0
+            raise NotEligibleForLoanError("Not eligible: current EMIs exceed 50% of monthly salary.")
         
         if credit_score > 50:
             return True, loan_request.interest_rate
@@ -83,7 +84,7 @@ class CheckLoanEligibilityUseCase:
             return True, 12.00
         elif 30 >= credit_score >= 10:
             return True, 16.00
-        return False, 0.0
+        raise NotEligibleForLoanError
 
 
     def execute(self, loan_request: CreateLoanRequest):
