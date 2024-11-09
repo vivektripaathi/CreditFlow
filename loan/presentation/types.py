@@ -47,8 +47,8 @@ class CreateLoanRequest(BaseModel):
 
 
 class CreateLoanResponse(BaseModel):
-    loan_id: int
+    loan_id: Optional[int] = None
     customer_id: int
-    loan_approved: bool
+    loan_approved: bool = False
     message: str
-    monthly_installment: int
+    monthly_installment: Optional[int] = None
