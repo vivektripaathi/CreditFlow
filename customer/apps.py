@@ -10,9 +10,10 @@ class CustomerConfig(AppConfig):
     def ready(self):
         from customer.inject import CustomerContainer
         import customer
+        from loan.domain.use_cases import create_loan_use_case
 
         self.inject_container = CustomerContainer()
         self.inject_container.wire(
             packages=[customer],
-            modules=[],
+            modules=[create_loan_use_case],
         )
