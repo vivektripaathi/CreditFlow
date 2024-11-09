@@ -1,5 +1,7 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
+
+from customer.domain.domain_models import CustomerDoaminModel
 
 
 class CheckLoanEligibilityRequest(BaseModel):
@@ -33,3 +35,12 @@ class BulkGetLoanResponse(BaseModel):
 
 class BulkGetLoanListResponse(BaseModel):
     __root__: List[BulkGetLoanResponse]
+
+
+class GetLoanResponse(BaseModel):
+    loan_id: int
+    customer: Optional[CustomerDoaminModel] = None
+    loan_amount: int
+    interest_rate: float
+    monthly_installment: int
+    tenure: int
