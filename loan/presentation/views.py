@@ -6,6 +6,7 @@ from dependency_injector.wiring import Provide
 from CreditFlow.utils import dict_serialized
 from loan.domain.use_cases.bulk_get_loans_use_case import BulkGetLoansUseCase
 from loan.domain.use_cases.check_loan_eligibility_use_case import CheckLoanEligibilityUseCase
+from loan.domain.use_cases.create_loan_use_case import CreateLoanUseCase
 from loan.domain.use_cases.get_loan_use_case import GetLoanUseCase
 from loan.exceptions import NotEligibleForLoanError
 from loan.presentation.types import CheckLoanEligibilityResponse, CreateLoanRequest
@@ -49,3 +50,14 @@ class GetLoanView(APIView):
     ):
         response = get_loan_use_case.execute(loan_id)
         return Response(data=dict_serialized(response), status=status.HTTP_200_OK)
+
+
+class CreateLoanView(APIView):
+    def post(
+        self,
+        request,
+        create_loan_use_case : CreateLoanUseCase = Provide["create_loan_use_case"],
+    ): 
+        loan_request = CreateLoanRequest.parse_obj(request.data)
+        response = create_loan_use_case.execute(loan_request)
+        return Response(data=dict_serialized(response), status=status.HTTP_201_CREATED)
