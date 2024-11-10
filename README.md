@@ -33,7 +33,7 @@ This project is a credit approval system built with Django and Django REST Frame
 3. **Create a PostgreSQL database** named `credit_flow_db`:
 
     ```sql
-    CREATE DATABASE credit_flow_db_docker1;
+    CREATE DATABASE credit_flow_db;
     ```
 
 3. **Environment Variables**:

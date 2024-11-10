@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from dependency_injector.wiring import Provide
-from CreditFlow.utils import dict_serialized
+from core.utils import dict_serialized
 from loan.domain.use_cases.bulk_get_loans_use_case import BulkGetLoansUseCase
 from loan.domain.use_cases.check_loan_eligibility_use_case import CheckLoanEligibilityUseCase
 from loan.domain.use_cases.create_loan_use_case import CreateLoanUseCase
