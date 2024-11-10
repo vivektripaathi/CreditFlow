@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 from typing import Tuple
+from customer.domain.domain_models import CustomerDoaminModel
+from customer.domain.use_cases.get_customer_use_case import GetCustomerUseCase
 from loan.data.abstract_repo import LoanAbstractRepository
 from dependency_injector.wiring import Provide
 
@@ -11,9 +13,11 @@ from loan.presentation.types import CreateLoanRequest, CheckLoanEligibilityRespo
 class CheckLoanEligibilityUseCase:
     def __init__(
         self,
-        db_repo: LoanAbstractRepository = Provide["loan_db_repo"]
+        db_repo: LoanAbstractRepository = Provide["loan_db_repo"],
+        get_customer_use_case: GetCustomerUseCase = Provide["get_customer_use_case"],
     ) -> None:
         self.db_repo = db_repo
+        self.get_customer_use_case = get_customer_use_case
 
 
     def exctract_credit_score_factors(self, loans: LoanListDomainModel) -> CreditScoreFactors:
@@ -38,14 +42,14 @@ class CheckLoanEligibilityUseCase:
         )
 
 
-    def get_credit_score(self, previous_loans: LoanListDomainModel) -> int:
+    def get_credit_score(self, previous_loans: LoanListDomainModel, customer: CustomerDoaminModel) -> int:
         credit_score_factors = self.exctract_credit_score_factors(previous_loans)
-        approved_limit = previous_loans[0].customer.approved_limit
+        approved_limit = customer.approved_limit
 
         if credit_score_factors.loan_sum > approved_limit:
             raise NotEligibleForLoanError("Not eligible: total loans exceed your approved credit limit, resulting in a credit score of 0.")
 
-        past_emi_score = min(100, (credit_score_factors.emis_paid_on_time / credit_score_factors.tenures) * 100)
+        past_emi_score = min(100, (credit_score_factors.emis_paid_on_time / credit_score_factors.tenures) * 100) if(previous_loans) else 0
         num_loans_score = max(0, 100 - abs(previous_loans.__len__()-5) * 10)
         loan_activity_score = max(0, 100 - credit_score_factors.loans_this_year * 20)
         approved_volume_score = min(100, 10 * (credit_score_factors.loan_sum / approved_limit))
@@ -89,11 +93,12 @@ class CheckLoanEligibilityUseCase:
 
     def execute(self, loan_request: CreateLoanRequest):
         previous_loans = self.db_repo.bulk_get(loan_request.customer_id)
-        credit_score = self.get_credit_score(previous_loans)
+        customer = self.get_customer_use_case.execute(loan_request.customer_id)
+        credit_score = self.get_credit_score(previous_loans, customer)
         current_emis = self.get_current_emis(previous_loans)
         approval, corrected_interest_rate = self.determine_loan_eligibility(
             credit_score, current_emis,
-            previous_loans[0].customer.monthly_salary,
+            customer.monthly_salary,
             loan_request
         )
         return CheckLoanEligibilityResponse(
